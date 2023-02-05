@@ -1,0 +1,3 @@
+FROM postgres
+ENV POSTGRES_PASSWORD sdbot
+ENV POSTGRES_DB sdbot-db
