@@ -1,4 +1,4 @@
-package no.socially.disturbed.sdbot
+package no.sd.sdbot
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
