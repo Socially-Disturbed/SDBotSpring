@@ -11,8 +11,9 @@ class CommandMessage(val message: Message) {
 
     fun getMethodName(): String {
         val msg = message.content
-        return if (msg.contains(" ")) msg.substring(1, msg.indexOf(" "))
-        else msg.substring(1)
+        val methodStartIndex: Int = if (msg.contains('!')) 1 else 0
+        return if (msg.contains(" ")) msg.substring(methodStartIndex, msg.indexOf(" "))
+        else msg.substring(methodStartIndex)
     }
 
     fun getArguments(): String? {

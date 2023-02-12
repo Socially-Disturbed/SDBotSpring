@@ -20,7 +20,7 @@ class Bot (
             .on(MessageCreateEvent::class.java)
             .map(MessageCreateEvent::getMessage)
             .filter { !it.author.get().isBot }
-            .filter { it.content[0] == '!' }
+            .filter { it.content[0] == '!' || commandManager.isSpecialHandling(it) }
             .subscribe(
                 { handleMessage(it) },
                 { handleError(it) }
