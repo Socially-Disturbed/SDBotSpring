@@ -1,48 +1,78 @@
 package no.sd.sdbot.discord.command
 
-import no.sd.sdbot.discord.command.Command.*
 import no.sd.sdbot.discord.function.SDFunctions
-import java.util.*
 
-enum class Command {
-    GetPlayersByNames,
-    GetPlayersByIds,
-    GetMatch,
-    GetLastMatch,
-    UpdateGuestScore,
-    UpdateGuestWin,
-    UpdateSDScore,
-    UpdateSDWin,
-    GetGuestScoreBoard,
-    GetSDScoreBoard,
-    Help;
+enum class Command: FunctionMapper {
+    GetPlayersByNames {
+        override fun getFunction(sdFunctions: SDFunctions): (CommandMessage) -> CommandMessage {
+            return sdFunctions::getPlayersByNames
+        }
+    },
+    GetPlayersByIds {
+        override fun getFunction(sdFunctions: SDFunctions): (CommandMessage) -> CommandMessage {
+            return sdFunctions::getPlayersById
+        }
+    },
+    GetMatch {
+        override fun getFunction(sdFunctions: SDFunctions): (CommandMessage) -> CommandMessage {
+            return sdFunctions::getMatch
+        }
+    },
+    GetLastMatch {
+        override fun getFunction(sdFunctions: SDFunctions): (CommandMessage) -> CommandMessage {
+            return sdFunctions::getLastMatch
+        }
+    },
+    UpdateGuestScore {
+        override fun getFunction(sdFunctions: SDFunctions): (CommandMessage) -> CommandMessage {
+            return sdFunctions::updateGuestScore
+        }
+    },
+    UpdateGuestWin {
+        override fun getFunction(sdFunctions: SDFunctions): (CommandMessage) -> CommandMessage {
+            return sdFunctions::updateGuestWin
+        }
+    },
+    UpdateSDScore {
+        override fun getFunction(sdFunctions: SDFunctions): (CommandMessage) -> CommandMessage {
+            return sdFunctions::updateSDScore
+        }
+    },
+    UpdateSDWin {
+        override fun getFunction(sdFunctions: SDFunctions): (CommandMessage) -> CommandMessage {
+            return sdFunctions::updateSDWin
+        }
+    },
+    GetGuestScoreBoard {
+        override fun getFunction(sdFunctions: SDFunctions): (CommandMessage) -> CommandMessage {
+            return sdFunctions::getGuestScoreBoard
+        }
+    },
+    GetSDScoreBoard {
+        override fun getFunction(sdFunctions: SDFunctions): (CommandMessage) -> CommandMessage {
+            return sdFunctions::getSDScoreBoard
+        }
+    },
+    Help {
+        override fun getFunction(sdFunctions: SDFunctions): (CommandMessage) -> CommandMessage {
+            return sdFunctions::help
+        }
+    },
+    SteinSaksPapir {
+        override fun getFunction(sdFunctions: SDFunctions): (CommandMessage) -> CommandMessage {
+            return sdFunctions::steinSaksPapir
+        }
+    };
 
     companion object {
         fun getCommand(commandString: String): Command? {
-            return try {
-                values().first { it.name.lowercase() == commandString.lowercase() }
-            } catch (iaex: NoSuchElementException) {
-                null
-            }
+            val commands = values().filter { it.name.lowercase() == commandString.lowercase() }
+            return if (commands.isNotEmpty() ) commands.first()
+            else null
         }
     }
 }
 
-fun getFunction(sdFunctions: SDFunctions, command: Command): ((CommandMessage) -> CommandMessage)? {
-
-    val commandToFunctionMap: MutableMap<Command, (CommandMessage) -> CommandMessage> = EnumMap(Command::class.java)
-
-    commandToFunctionMap[GetPlayersByNames] = sdFunctions::getPlayersByNames
-    commandToFunctionMap[GetPlayersByIds] = sdFunctions::getPlayersById
-    commandToFunctionMap[GetMatch] = sdFunctions::getMatch
-    commandToFunctionMap[GetLastMatch] = sdFunctions::getLastMatch
-    commandToFunctionMap[UpdateGuestScore] = sdFunctions::updateGuestScore
-    commandToFunctionMap[UpdateGuestWin] = sdFunctions::updateGuestWin
-    commandToFunctionMap[UpdateSDScore] = sdFunctions::updateSDScore
-    commandToFunctionMap[UpdateSDWin] = sdFunctions::updateSDWin
-    commandToFunctionMap[GetGuestScoreBoard] = sdFunctions::getGuestScoreBoard
-    commandToFunctionMap[GetSDScoreBoard] = sdFunctions::getSDScoreBoard
-    commandToFunctionMap[Help] = sdFunctions::help
-
-    return commandToFunctionMap[command]
+interface FunctionMapper {
+    fun getFunction(sdFunctions: SDFunctions): ((CommandMessage) -> CommandMessage)
 }

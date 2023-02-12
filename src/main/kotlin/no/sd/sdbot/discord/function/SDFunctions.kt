@@ -14,5 +14,6 @@ interface SDFunctions {
     fun getGuestScoreBoard(cmdMsg: CommandMessage): CommandMessage
     fun getSDScoreBoard(cmdMsg: CommandMessage): CommandMessage
     fun help(cmdMsg: CommandMessage): CommandMessage
+    fun steinSaksPapir(cmdMsg: CommandMessage): CommandMessage
 }
 

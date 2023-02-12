@@ -1,19 +1,23 @@
 package no.sd.sdbot.discord.command
 
 import no.sd.sdbot.discord.function.SDFunctions
+import no.sd.sdbot.discord.steinsakspapir.SSPType
 import org.springframework.stereotype.Component
 
 @Component
 class CommandManager(
     val sdFunctions: SDFunctions
 ) {
-    fun handleCommand(commandMessage: CommandMessage): CommandMessage {
-        val command = Command.getCommand(commandMessage.getMethodName())
-            ?: return commandMessage.apply { returningMsg = "No such command: ${commandMessage.getMethodName()}" }
+    fun handleCommand(cmdMsg: CommandMessage): CommandMessage {
+        val command = checkSpecialHandling(cmdMsg.getMethodName())
+            ?: return cmdMsg.apply { returningMsg = "No such command: ${cmdMsg.getMethodName()}" }
 
-        val sdFunction = getFunction(sdFunctions, command)
-            ?: return commandMessage.apply { returningMsg = "No function for command: ${commandMessage.getMethodName()}" }
+        val sdFunction = command.getFunction(sdFunctions)
+        return sdFunction.invoke(cmdMsg)
+    }
 
-        return sdFunction(commandMessage)
+    fun checkSpecialHandling(methodName: String): Command? {
+        return if (SSPType.values().any { it.name.lowercase() == methodName.lowercase() } ) Command.SteinSaksPapir
+        else Command.getCommand(methodName)
     }
 }

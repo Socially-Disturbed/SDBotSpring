@@ -5,12 +5,18 @@ import no.sd.pubg.domain.print.prettyPrint
 import no.sd.pubg.service.MatchService
 import no.sd.pubg.service.PlayerService
 import no.sd.sdbot.discord.command.CommandMessage
+import no.sd.sdbot.discord.print.prettyPrint
+import no.sd.sdbot.discord.steinsakspapir.SSPEntry
+import no.sd.sdbot.discord.steinsakspapir.SSPHandler
+import no.sd.sdbot.discord.steinsakspapir.SSPType
 import org.springframework.stereotype.Component
+import java.time.LocalTime
 
 @Component
 class DefaultSDFunctions(
     val playerService: PlayerService,
-    val matchService: MatchService
+    val matchService: MatchService,
+    val sspHandler: SSPHandler
 ): SDFunctions {
 
     override fun getPlayersByNames(cmdMsg: CommandMessage): CommandMessage {
@@ -134,4 +140,19 @@ class DefaultSDFunctions(
 //        return cmdMsg
     }
 
+    override fun steinSaksPapir(cmdMsg: CommandMessage): CommandMessage {
+        val sspEntry = SSPEntry(
+            cmdMsg.message.author.get().username,
+            SSPType.getSSPType(cmdMsg.getMethodName())!!,
+            LocalTime.now()
+        )
+
+        val sspResult = sspHandler.addRundeEntry(sspEntry)
+        sspResult?.let {
+            cmdMsg.returningMsg = it.prettyPrint()
+            cmdMsg.returnMsgChannelId= "990003666134106132"
+        }
+
+        return cmdMsg
+    }
 }

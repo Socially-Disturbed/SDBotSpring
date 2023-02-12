@@ -59,6 +59,8 @@ class Bot (
                 it.delete().subscribe()
             }
         }
-        channel.createMessage(cmdMsg.returningMsg).subscribe()
+        cmdMsg.returningMsg?.let {
+            channel.createMessage(cmdMsg.returningMsg).subscribe()
+        }
     }
 }
