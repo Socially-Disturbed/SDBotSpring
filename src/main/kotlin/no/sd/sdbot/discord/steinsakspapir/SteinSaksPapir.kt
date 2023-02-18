@@ -1,5 +1,7 @@
 package no.sd.sdbot.discord.steinsakspapir
 
+import no.sd.sdbot.discord.command.CommandMessage
+import no.sd.sdbot.discord.print.prettyPrint
 import no.sd.sdbot.discord.steinsakspapir.SSPType.*
 import org.springframework.stereotype.Component
 import java.time.LocalTime
@@ -9,13 +11,32 @@ class SSPHandler {
 
     var runde: SPPRunde? = null
 
-    fun addRundeEntry(entry: SSPEntry): SSPResult? {
+    fun startOrAddSSPRundeEntry(cmdMsg: CommandMessage): CommandMessage {
 
+        val entry = createSSPEntry(cmdMsg)
+        val sspResult = getResult(entry)
+
+        sspResult?.let {
+            cmdMsg.returningMsg = it.prettyPrint()
+            cmdMsg.returnMsgChannelId= "1076223424801816658"
+        }
+        return cmdMsg
+    }
+
+    fun createSSPEntry(cmdMsg: CommandMessage): SSPEntry {
+        return SSPEntry(
+            cmdMsg.message.author.get().username,
+            SSPType.getSSPType(cmdMsg.getMethodName())!!,
+            LocalTime.now()
+        )
+    }
+
+    fun getResult(entry: SSPEntry): SSPResult? {
         return if (runde == null) {
-            runde = SPPRunde().apply { newEntry(entry) }
+            runde = SPPRunde().apply { newRundeEntry(entry) }
             null
         } else {
-            runde!!.newEntry(entry)
+            runde!!.newRundeEntry(entry)
             resolveResult(runde!!.resolve())
         }
     }
@@ -32,7 +53,7 @@ class SSPHandler {
 class SPPRunde {
     private val entries: MutableList<SSPEntry> = ArrayList()
 
-    fun newEntry(entry: SSPEntry) {
+    fun newRundeEntry(entry: SSPEntry) {
         when {
             entries.size == 1 && outdated() -> clearAndAdd(entry)
             else -> entries.add(entry)
@@ -84,7 +105,7 @@ class SSPMatrix(
             value1 == Saks && value2 == Papir -> 1
             value1 == Saks && value2 == Stein -> 2
             value1 == Papir && value2 == Stein -> 1
-            value1 == Papir && value2 == Saks -> 1
+            value1 == Papir && value2 == Saks -> 2
             else -> 0
         }
     }

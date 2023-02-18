@@ -5,6 +5,9 @@ import discord4j.core.GatewayDiscordClient
 import discord4j.core.event.domain.message.MessageCreateEvent
 import discord4j.core.`object`.entity.Message
 import discord4j.core.`object`.entity.channel.MessageChannel
+import discord4j.core.`object`.entity.channel.VoiceChannel
+import discord4j.discordjson.json.ChannelData
+import discord4j.discordjson.json.ImmutableChannelData
 import no.sd.sdbot.SdBotApplication.SdBotApplicationLogger.logger
 import no.sd.sdbot.discord.command.CommandManager
 import no.sd.sdbot.discord.command.CommandMessage
@@ -16,6 +19,7 @@ class Bot (
     val commandManager: CommandManager
 ) {
     init {
+
         gateway
             .on(MessageCreateEvent::class.java)
             .map(MessageCreateEvent::getMessage)
@@ -28,10 +32,15 @@ class Bot (
     }
 
     fun handleMessage(message: Message) {
+
+        if (message.content == "!join") {
+            message.authorAsMember.block()!!.voiceState.block()!!.channel.block()!!.join().block()
+        } else {
         val commandMessage = commandManager.handleCommand(CommandMessage(message))
         logger.info("Command from discord: ${message.content}")
 
         respondToCommand(commandMessage)
+        }
     }
 
     fun handleError(throwable: Throwable) {
@@ -43,7 +52,7 @@ class Bot (
         with(cmdMsg) {
             if(deleteCommandMsg) this.message.delete().subscribe()
 
-            if (returnMsgChannelId == null) { message.channel.subscribe { handleResponse(it, cmdMsg) }}
+            if (returnMsgChannelId == null) { message.channel.subscribe { handleResponse(it, this) }}
             else {
                 gateway
                     .getChannelById(Snowflake.of(returnMsgChannelId!!))
