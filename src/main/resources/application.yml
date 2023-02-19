@@ -3,11 +3,5 @@ spring:
     url: jdbc:postgresql://localhost:5432/sdbot-db
     username: postgres
     password: sdbot
-    schema: sdbot
   flyway:
-    user: postgres
-    password: sdbot
-    url: jdbc:postgresql://localhost:5432/sdbot-db
-    enabled: true
     schemas: sdbot
-
