@@ -26,7 +26,7 @@ class ApiClientConfig(
         return WebClient.builder()
             .baseUrl(baseUrl)
             .defaultHeader(HttpHeaders.ACCEPT, "application/vnd.api+json")
-            .defaultHeader(HttpHeaders.AUTHORIZATION, environment.getRequiredProperty("pubg.apikey"))
+            .defaultHeader(HttpHeaders.AUTHORIZATION, environment.getProperty("pubg.apiKey", "noToken"))
             .build()
     }
 }

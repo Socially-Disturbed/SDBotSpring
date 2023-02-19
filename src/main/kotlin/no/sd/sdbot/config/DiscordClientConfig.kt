@@ -14,7 +14,8 @@ class DiscordClientConfig (private val environment: Environment) {
 
     @Bean
     fun createDiscordClient() : GatewayDiscordClient {
-        val discordClient = DiscordClient.create(environment.getRequiredProperty("discordToken"))
+
+        val discordClient = DiscordClient.create(environment.getProperty("discordToken", "noToken"))
         val gateway = discordClient.login().block()!!
         gateway.eventDispatcher
             .on(ReadyEvent::class.java)
