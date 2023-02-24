@@ -24,12 +24,21 @@ class DbService(@Autowired val jdbcTemplate: JdbcTemplate) {
     }
 
     fun updateGuestWin(user: String?) {
-        val newWinCount = 1 + getUserGuestScoreBoard(user).wins
-        val query = "UPDATE \"SD_GUEST_SCORE\" SET \"WINS\" = $newWinCount WHERE \"NAME\" = \'$user\'"
-        jdbcTemplate.update(query)
+        val userResult = getUserGuestScoreBoard(user)
+        if (userResult == null) {
+            jdbcTemplate.update("INSERT INTO \"SD_GUEST_SCORE\"(\"NAME\", \"WINS\") VALUES ('$user', 1)", userRowMapper)
+        }
+        else {
+            val newWinCount = 1 + userResult.wins
+            val query = "UPDATE \"SD_GUEST_SCORE\" SET \"WINS\" = $newWinCount WHERE \"NAME\" = \'$user\'"
+            jdbcTemplate.update(query)
+        }
+
     }
 
-    fun getUserGuestScoreBoard(user: String?): User {
+    fun getUserGuestScoreBoard(user: String?): User? {
+        val result = jdbcTemplate.query("SELECT * FROM \"SD_GUEST_SCORE\" WHERE \"NAME\" = \'$user\'", userRowMapper)
+        if (result.isEmpty()) return null
         return jdbcTemplate.query("SELECT * FROM \"SD_GUEST_SCORE\" WHERE \"NAME\" = \'$user\'", userRowMapper)[0]
     }
 

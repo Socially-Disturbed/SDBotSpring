@@ -24,7 +24,8 @@ fun SSPResult.prettyPrint(): String {
 
 fun User.prettyPrint(): String {
     return "\n-------------------------\n" +
-           "${name} - ${rank}\n" +
+           "$name - ${rank}\n" +
+           "Score: $score\n" +
            "Wins: ${wins}\n" +
            "ADR: ${adr}\n" +
            "-------------------------"
