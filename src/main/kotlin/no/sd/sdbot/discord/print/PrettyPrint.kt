@@ -1,6 +1,7 @@
 package no.sd.sdbot.discord.print
 
 import no.sd.sdbot.discord.steinsakspapir.SSPEntry
+import no.sd.sdbot.db.User
 import no.sd.sdbot.discord.steinsakspapir.SSPResult
 
 fun SSPResult.prettyPrint(): String {
@@ -19,4 +20,20 @@ fun SSPResult.prettyPrint(): String {
         }
         "${randomStrings(winnerEntry.author, loserEntry.author)}, and won this SteinSaksPapir {${winnerEntry.type} vs ${loserEntry.type}}"
     }
+}
+
+fun User.prettyPrint(): String {
+    return "\n-------------------------\n" +
+           "${name} - ${rank}\n" +
+           "Wins: ${wins}\n" +
+           "ADR: ${adr}\n" +
+           "-------------------------"
+}
+
+fun userListToPrint(users: List<User>): String {
+    var print = ""
+    for (user in users)
+        print += user.prettyPrint()
+
+    return print
 }

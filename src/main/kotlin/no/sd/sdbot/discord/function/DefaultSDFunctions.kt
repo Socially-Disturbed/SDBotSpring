@@ -4,7 +4,13 @@ import no.sd.pubg.domain.Player
 import no.sd.pubg.domain.print.prettyPrint
 import no.sd.pubg.service.MatchService
 import no.sd.pubg.service.PlayerService
+import no.sd.sdbot.db.DbService
+import no.sd.sdbot.db.User
+import no.sd.sdbot.discord.ChannelId
 import no.sd.sdbot.discord.command.CommandMessage
+import no.sd.sdbot.discord.print.prettyPrint
+import no.sd.sdbot.discord.print.userListToPrint
+import no.sd.sdbot.discord.steinsakspapir.SSPEntry
 import no.sd.sdbot.discord.steinsakspapir.SSPHandler
 import org.springframework.stereotype.Component
 
@@ -12,6 +18,7 @@ import org.springframework.stereotype.Component
 class DefaultSDFunctions(
     val playerService: PlayerService,
     val matchService: MatchService,
+    val dbService: DbService,
     val sspHandler: SSPHandler
 ): SDFunctions {
 
@@ -56,35 +63,31 @@ class DefaultSDFunctions(
     }
 
     override fun updateGuestScore(cmdMsg: CommandMessage): CommandMessage {
-        TODO()
-//        val updateInfo: String = cmdMsg.getCommandArguments()
-//        val arrOfMsg = updateInfo.split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-//        println(Arrays.toString(arrOfMsg))
-//        if (arrOfMsg.size != 2) {
-//            cmdMsg.returningMsg = "Wrong amount of arguments, should be 3: $arrOfMsg")
-//            return cmdMsg
-//        }
-//        val PlayerResponse = arrOfMsg[0]
-//        val score = arrOfMsg[1].toFloat()
-//        cmdMsg.returningMsg =
-//            userSetToHighscoreList(dbService.updateUserScore(player, true, score))
-//        )
-//        cmdMsg.deleteLastChannelMsg(true)
-//        cmdMsg.deleteCommandMsg(true)
-//        cmdMsg.setReturnMsgChannelId(DiscordID.GUEST_HIGHSCORE_CHANNEL.label)
-//        return cmdMsg
+        val updateInfo: String? = cmdMsg.getArguments()
+        val arrOfMsg = updateInfo!!.split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+        println(arrOfMsg)
+        if (arrOfMsg.size != 2) {
+            cmdMsg.returningMsg = "Wrong amount of arguments, should be 3: $arrOfMsg"
+            return cmdMsg
+        }
+        val player = arrOfMsg[0]
+        val score = arrOfMsg[1].toFloat()
+        dbService.updateGuestScore(player, score)
+        cmdMsg.returningMsg = userListToPrint(dbService.getGuestScoreBoard())
+        cmdMsg.deleteLastChannelMsg = true
+        cmdMsg.deleteCommandMsg = true
+        cmdMsg.returnMsgChannelId = ChannelId.GUEST_HIGHSCORE_CHANNEL.id
+        return cmdMsg
     }
 
     override fun updateGuestWin(cmdMsg: CommandMessage): CommandMessage {
-        TODO()
-//        val playerName: String = cmdMsg.getCommandArguments()
-//        cmdMsg.returningMsg =
-//            userSetToHighscoreList(dbService.updateUserWin(playerName, true))
-//        )
-//        cmdMsg.deleteLastChannelMsg(true)
-//        cmdMsg.deleteCommandMsg(true)
-//        cmdMsg.setReturnMsgChannelId(DiscordID.GUEST_HIGHSCORE_CHANNEL.label)
-//        return cmdMsg
+        val playerName: String? = cmdMsg.getArguments()
+        dbService.updateGuestWin(playerName)
+        cmdMsg.returningMsg = userListToPrint(dbService.getGuestScoreBoard())
+        cmdMsg.deleteLastChannelMsg = true
+        cmdMsg.deleteCommandMsg = true
+        cmdMsg.returnMsgChannelId = ChannelId.GUEST_HIGHSCORE_CHANNEL.id
+        return cmdMsg
     }
 
     override fun updateSDScore(cmdMsg: CommandMessage): CommandMessage {
@@ -119,9 +122,11 @@ class DefaultSDFunctions(
     }
 
     override fun getGuestScoreBoard(cmdMsg: CommandMessage): CommandMessage {
-        TODO()
-//        cmdMsg.returningMsg = userSetToHighscoreList(dbService.getAllUsers(true)))
-//        return cmdMsg
+        cmdMsg.returningMsg = userListToPrint(dbService.getGuestScoreBoard())
+        cmdMsg.deleteLastChannelMsg = true
+        cmdMsg.deleteCommandMsg = true
+        cmdMsg.returnMsgChannelId = ChannelId.GUEST_HIGHSCORE_CHANNEL.id
+        return cmdMsg
     }
 
     override fun getSDScoreBoard(cmdMsg: CommandMessage): CommandMessage {
