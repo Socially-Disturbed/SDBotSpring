@@ -1,4 +1,4 @@
-package no.sd.sdbot.discord.print
+package no.sd.sdbot.discord.utility.print
 
 import no.sd.sdbot.discord.steinsakspapir.SSPEntry
 import no.sd.sdbot.db.User

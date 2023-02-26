@@ -4,6 +4,7 @@ import discord4j.common.util.Snowflake
 import discord4j.core.GatewayDiscordClient
 import discord4j.core.event.domain.message.MessageCreateEvent
 import discord4j.core.`object`.entity.Message
+import discord4j.core.`object`.entity.channel.Channel
 import discord4j.core.`object`.entity.channel.MessageChannel
 import discord4j.core.`object`.entity.channel.VoiceChannel
 import discord4j.discordjson.json.ChannelData
@@ -41,6 +42,20 @@ class Bot (
 
         respondToCommand(commandMessage)
         }
+    }
+
+    fun sendMessage(msg: String, channelId: ChannelId, deleteLastMsgInChannel: Boolean) {
+        val channel: MessageChannel? = gateway.getChannelById(Snowflake.of(channelId.id)).block() as MessageChannel?
+        if (channel == null) {
+            logger.error("Ingen channel med id: ${channelId.id}")
+            return
+        }
+        if (deleteLastMsgInChannel) {
+            channel.lastMessage.subscribe {
+                it.delete().subscribe()
+            }
+        }
+        channel.createMessage(msg).subscribe()
     }
 
     fun handleError(throwable: Throwable) {
