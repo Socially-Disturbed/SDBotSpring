@@ -1,7 +1,7 @@
 package no.sd.sdbot.discord.steinsakspapir
 
 import no.sd.sdbot.discord.command.CommandMessage
-import no.sd.sdbot.discord.print.prettyPrint
+import no.sd.sdbot.discord.utility.print.prettyPrint
 import no.sd.sdbot.discord.steinsakspapir.SSPType.*
 import org.springframework.stereotype.Component
 import java.time.LocalTime

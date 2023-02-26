@@ -1,8 +1,10 @@
 package no.sd.pubg.api
 
 import no.sd.pubg.api.response.*
+import no.sd.pubg.api.response.mapper.toSeason
 import no.sd.pubg.api.webclient.PubgApiClient
 import no.sd.pubg.domain.PlayerId
+import no.sd.pubg.domain.Season
 import no.sd.pubg.domain.SeasonId
 import org.springframework.stereotype.Service
 
@@ -22,8 +24,8 @@ class SeasonsApi (private val apiClient: PubgApiClient) {
         return seasonsResponse?.data!!.toSet()
     }
 
-    fun getCurrentSeason(): SeasonResponse {
-        return getAvailableSeasons().first { it.attributes.isCurrentSeason }
+    fun getCurrentSeason(): Season {
+        return getAvailableSeasons().first { it.attributes.isCurrentSeason }.toSeason()
     }
 
     fun getRankedStats(playerId: PlayerId, seasonId: SeasonId): RankedPlayerStatsResponse {
