@@ -11,14 +11,19 @@ fun randomStrings(winnerString: String, loserString: String): String {
         "%s undressed and manhandled %s",
         "%s decorated his christmas tree with %s",
         "%s fertilized his flowers with %s",
-        "%s grisedengte %s",
         "%s felt it was like stealing candy from a child-version of %s",
-        "%s used a samekniv on %s",
+        "%s slayed %s with Vebis' samekniv",
         "%s bamboozled %s",
         "%s went full Edward Scissorhands on %s",
-        "%s was embarrassed by %s play",
+        "%s was embarrassed by %s weak play",
         "%s pwned %s",
-        "%s played his mental games with %s"
+        "%s played his mental games with %s",
+        "%s went full Mezzy mode and whined %s to death",
+        "%s used Thøøtles tortoiseshell to crush %s",
+        "%s is a 1337 kinda SSP-player, ownd %s",
+        "%s bitch slapped %s",
+        "%s showed %s his amazing skills",
+        "%s cåkkblåkkt %s"
     )
     return String.format(sspStrings[Random().nextInt(sspStrings.size)], winnerString, loserString)
 }
