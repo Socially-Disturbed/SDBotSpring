@@ -3,6 +3,7 @@ package no.sd.sdbot.discord.print
 import no.sd.sdbot.discord.steinsakspapir.SSPEntry
 import no.sd.sdbot.discord.steinsakspapir.SSPResult
 import no.sd.sdbot.discord.steinsakspapir.SSPType
+import no.sd.sdbot.discord.utility.print.prettyPrint
 import org.junit.jupiter.api.Test
 import java.time.LocalTime
 

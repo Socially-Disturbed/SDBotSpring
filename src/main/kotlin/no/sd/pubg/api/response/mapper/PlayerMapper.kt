@@ -8,6 +8,7 @@ fun PlayerResponse.toPlayer(): Player {
         return Player(
             PlayerId(id),
             attributes.name,
-            relationships.matches.toMatchIds()
+            relationships.matches.toMatchIds(),
+            null
         )
 }
