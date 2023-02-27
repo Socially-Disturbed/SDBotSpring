@@ -10,8 +10,8 @@ class InMemoryMatchCache(
     val matchesApi: MatchesApi
 ): MatchCache {
 
-    private val cache: MutableMap<MatchId, MatchResponseWrapper> = HashMap()
+    private val cache: MutableMap<MatchId, MatchResponseWrapper?> = HashMap()
 
-    override fun getMatch(matchId: MatchId): MatchResponseWrapper =
+    override fun getMatch(matchId: MatchId): MatchResponseWrapper? =
         cache.getOrPut(matchId) { matchesApi.getMatch(matchId.id) }
 }

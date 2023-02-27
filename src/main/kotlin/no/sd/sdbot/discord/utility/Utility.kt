@@ -1,10 +1,10 @@
 package no.sd.sdbot.discord.utility
 
-import no.sd.sdbot.db.User
+import no.sd.sdbot.db.Warrior
 
-fun userListToStringSetWithNames(users: List<User> ): Set<String> {
+fun userListToStringSetWithNames(warriors: List<Warrior> ): Set<String> {
     val usernames = HashSet<String>()
-    for (user in users) {
+    for (user in warriors) {
         usernames.add(user.name)
     }
     return usernames

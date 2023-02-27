@@ -1,7 +1,8 @@
 package no.sd.sdbot.discord.utility.print
 
+import no.sd.sdbot.db.ScoreWithWarrior
+import no.sd.sdbot.db.Warrior
 import no.sd.sdbot.discord.steinsakspapir.SSPEntry
-import no.sd.sdbot.db.User
 import no.sd.sdbot.discord.steinsakspapir.SSPResult
 
 fun SSPResult.prettyPrint(): String {
@@ -22,36 +23,15 @@ fun SSPResult.prettyPrint(): String {
     }
 }
 
-fun User.prettyPrint(): String {
+fun ScoreWithWarrior.prettyPrint(): String {
     return "\n```" +
-            "$name - ${rank}\n" +
+            warrior.prettyPrint() +
             "Score: $score\n" +
             "Wins: ${wins}\n" +
-            "ADR: ${adr}\n" +
             "```"
 }
 
-fun User.prettyNewPrint(): String {
-    return "\n```" +
-            "$name - ${rank}\n" +
-            "Score: $score\n" +
-            "Wins: ${wins}\n" +
-            "ADR: ${adr}\n" +
-            "```"
-}
-
-fun userListToPrint(users: List<User>): String {
-    var print = ""
-    for (user in users)
-        print += user.prettyPrint()
-
-    return print
-}
-
-fun userListToPrettyNewPrint(users: List<User>): String {
-    var print = ""
-    for (user in users)
-        print += user.prettyNewPrint()
-
-    return print
+fun Warrior.prettyPrint(): String {
+    return "$name - ${rank}\n" +
+           "ADR: ${adr}\n"
 }

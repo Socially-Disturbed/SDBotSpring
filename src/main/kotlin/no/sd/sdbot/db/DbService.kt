@@ -1,77 +1,96 @@
 package no.sd.sdbot.db
 
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.jdbc.core.JdbcTemplate
-import org.springframework.jdbc.core.RowMapper
 import org.springframework.stereotype.Service
-import java.sql.ResultSet
 
 @Service
-class DbService(@Autowired val jdbcTemplate: JdbcTemplate) {
-    var userRowMapper: RowMapper<User> = RowMapper<User> { resultSet: ResultSet, rowIndex: Int ->
-        User(resultSet.getString("NAME"), resultSet.getFloat("SCORE"),
-                resultSet.getInt("WINS"), resultSet.getFloat("ADR"), resultSet.getString("RANK"))
+class DbService(
+    val warriorRepository: WarriorRepository,
+    val sdRepository: SdScoreRepository,
+    val guestRepository: GuestScoreRepository,
+) {
+
+    private fun getOrCreateWarrior(name: String): Warrior {
+        return warriorRepository.findByName(name)
+            ?: warriorRepository.save(Warrior(name = name))
     }
 
-    fun updateSDWin(user: String?) {
-        val userResult = getUserSDScoreBoard(user)
-        if (userResult == null) {
-            jdbcTemplate.update("INSERT INTO \"SD_SCORE\" (\"NAME\", \"WINS\") VALUES ('$user', 1)")
-        }
-        else {
-            val newWinCount = 1 + userResult.wins
-            jdbcTemplate.update("UPDATE \"SD_SCORE\" SET \"WINS\" = $newWinCount WHERE \"NAME\" = \'$user\'")
-        }
+    fun updateSDWin(name: String) {
+        val warrior = getOrCreateWarrior(name)
+
+        sdRepository.findByWarriorName(warrior.name)?.let {
+            it.wins = it.wins + 1
+            sdRepository.save(it)
+        } ?: sdRepository.save(SdScore(warriorid = warrior.id, wins = 1))
     }
 
-    fun updateSDScore(user: String, score: Float) {
-        jdbcTemplate.update("UPDATE \"SD_SCORE\" SET \"SCORE\" = $score WHERE \"NAME\" = \'$user\'")
-    }
-
-    fun updateSDRankAdr(user: String, adr: Int, rank: String) {
-        jdbcTemplate.update("UPDATE \"SD_SCORE\" SET \"ADR\" = $adr, \"RANK\" = \'$rank\' WHERE \"NAME\" = \'$user\'")
-    }
-
-    fun getUserSDScoreBoard(user: String?): User? {
-        val result = jdbcTemplate.query("SELECT * FROM \"SD_SCORE\" WHERE \"NAME\" = \'$user\'", userRowMapper)
-        if (result.isEmpty()) return null
-        return result[0]
-    }
-
-    fun updateGuestRankAdr(user: String, adr: Int, rank: String) {
-        jdbcTemplate.update("UPDATE \"SD_GUEST_SCORE\" SET \"ADR\" = $adr, \"RANK\" = \'$rank\' WHERE \"NAME\" = \'$user\'")
-    }
-
-    fun updateGuestScore(user: String, score: Float) {
-        jdbcTemplate.update("UPDATE \"SD_GUEST_SCORE\" SET \"SCORE\" = $score WHERE \"NAME\" = \'$user\'")
-    }
-
-    fun updateGuestWin(user: String?) {
-        val userResult = getUserGuestScoreBoard(user)
-        if (userResult == null) {
-            jdbcTemplate.update("INSERT INTO \"SD_GUEST_SCORE\" (\"NAME\", \"WINS\") VALUES ('$user', 1)")
-        }
-        else {
-            val newWinCount = 1 + userResult.wins
-            jdbcTemplate.update("UPDATE \"SD_GUEST_SCORE\" SET \"WINS\" = $newWinCount WHERE \"NAME\" = \'$user\'")
+    fun updateSDScore(name: String, score: Double) {
+        val warrior = getOrCreateWarrior(name)
+        sdRepository.findByWarriorName(warrior.name)?.let {
+            it.score = score
+            sdRepository.save(it)
         }
     }
 
-    fun getUserGuestScoreBoard(user: String?): User? {
-        val result = jdbcTemplate.query("SELECT * FROM \"SD_GUEST_SCORE\" WHERE \"NAME\" = \'$user\'", userRowMapper)
-        if (result.isEmpty()) return null
-        return result[0]
+    fun updateSDRankAdr(name: String, adr: Int, rank: String) {
+        warriorRepository.save(
+            getOrCreateWarrior(name).apply {
+                this.adr = adr
+                this.rank = rank
+            }
+        )
     }
 
-    fun getAllUsers(): List<User> {
-        return jdbcTemplate.query("SELECT * FROM \"SD_GUEST_SCORE\" UNION SELECT * FROM \"SD_SCORE\"", userRowMapper)
+    fun updateGuestRankAdr(name: String, adr: Int, rank: String) {
+        warriorRepository.save(
+            getOrCreateWarrior(name).apply {
+                this.adr = adr
+                this.rank = rank
+            }
+        )
     }
 
-    fun getAllSDUsers(): List<User> {
-        return jdbcTemplate.query("SELECT * FROM \"SD_SCORE\"", userRowMapper)
+    fun updateGuestScore(name: String, score: Double) {
+        val warrior = getOrCreateWarrior(name)
+        guestRepository.findByWarriorName(warrior.name)?.let {
+            it.score = score
+            guestRepository.save(it)
+        }
     }
 
-    fun getAllGuestUsers(): List<User> {
-        return jdbcTemplate.query("SELECT * FROM \"SD_GUEST_SCORE\"", userRowMapper)
+    fun updateGuestWin(name: String) {
+        val warrior = getOrCreateWarrior(name)
+
+        guestRepository.save(
+            guestRepository.findByWarriorName(warrior.name)?.apply {
+                this.wins = this.wins + 1
+            } ?: GuestScore(warriorid = warrior.id, wins = 1)
+        )
     }
+
+    fun getAllWarriors(): List<Warrior> {
+        return warriorRepository.findAll().toList()
+    }
+
+    fun getAllSDUsers(): List<ScoreWithWarrior> {
+        return sdRepository.findAll().toList()
+            .map { with(it) { toScoreWithWarrior(id, score, wins, warriorid) } }
+    }
+
+    fun getAllGuestUsers(): List<ScoreWithWarrior> {
+        return guestRepository.findAll().toList()
+            .map { with(it) { toScoreWithWarrior(id, score, wins, warriorid) } }
+    }
+}
+
+fun DbService.toScoreWithWarrior(
+    id: Int, score: Double, wins: Int, warriorid: Int
+): ScoreWithWarrior {
+    val warrior = warriorRepository.findById(warriorid).get()
+
+    return ScoreWithWarrior(
+        id = id,
+        score = score,
+        wins = wins,
+        warrior = warrior
+    )
 }

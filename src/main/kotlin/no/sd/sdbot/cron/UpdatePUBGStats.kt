@@ -2,40 +2,37 @@ package no.sd.sdbot.cron
 
 import no.sd.pubg.domain.Player
 import no.sd.pubg.domain.Season
-import no.sd.pubg.service.PlayerService
-import no.sd.pubg.service.SeasonService
+import no.sd.pubg.service.PubgService
 import no.sd.sdbot.db.DbService
+import no.sd.sdbot.db.Warrior
 import no.sd.sdbot.discord.Bot
 import no.sd.sdbot.discord.ChannelId
-import no.sd.sdbot.discord.utility.print.userListToPrint
-import no.sd.sdbot.discord.utility.stringSetToStringWithDelim
-import no.sd.sdbot.discord.utility.userListToStringSetWithNames
+import no.sd.sdbot.discord.utility.print.prettyPrint
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 
 @Service
 class UpdatePUBGStats(
         val dbService: DbService,
-        val seasonService: SeasonService,
-        val playerService: PlayerService,
+        val pubgService: PubgService,
         val bot: Bot
 ) {
 
     @Scheduled(fixedRate = 36000000)
     fun getPUBGStats() {
-        val currentSeason: Season = seasonService.getCurrentSeason()
+        val currentSeason: Season = pubgService.getCurrentSeason()
 
-        val uniquePlayers: Set<String> = userListToStringSetWithNames(dbService.getAllUsers())
-        val players: Set<Player> = playerService.getPlayersByNames(stringSetToStringWithDelim(uniquePlayers, ","))
+        val allWarriors: List<Warrior> = dbService.getAllWarriors()
+        val players: Set<Player> = pubgService.getPlayersByNames(allWarriors.joinToString(","))
 
         for (player in players) {
-            player.rankedStats = seasonService.getRankedStats(player.id, currentSeason.seasonId)
+            player.rankedStats = pubgService.getRankedStats(player.id, currentSeason.seasonId)
             dbService.updateGuestRankAdr(player.name, player.rankedStats!!.adr, player.rankedStats!!.rank)
             dbService.updateSDRankAdr(player.name, player.rankedStats!!.adr, player.rankedStats!!.rank)
         }
 
-        val newGuestHighscoreList: String = userListToPrint(dbService.getAllGuestUsers())
-        val newSDHighscoreList: String = userListToPrint(dbService.getAllSDUsers())
+        val newGuestHighscoreList: String = dbService.getAllGuestUsers().joinToString { it.prettyPrint() }
+        val newSDHighscoreList: String = dbService.getAllSDUsers().joinToString { it.prettyPrint() }
         println(newGuestHighscoreList)
         println(newSDHighscoreList)
         val deleteLastMsg = true

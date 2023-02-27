@@ -6,7 +6,7 @@ import no.sd.pubg.domain.PlayerId
 import no.sd.pubg.domain.SeasonId
 
 interface MatchCache {
-    fun getMatch(matchId: MatchId): MatchResponseWrapper
+    fun getMatch(matchId: MatchId): MatchResponseWrapper?
 }
 
 interface PlayerCache {

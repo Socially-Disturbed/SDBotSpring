@@ -4,11 +4,7 @@ import discord4j.common.util.Snowflake
 import discord4j.core.GatewayDiscordClient
 import discord4j.core.event.domain.message.MessageCreateEvent
 import discord4j.core.`object`.entity.Message
-import discord4j.core.`object`.entity.channel.Channel
 import discord4j.core.`object`.entity.channel.MessageChannel
-import discord4j.core.`object`.entity.channel.VoiceChannel
-import discord4j.discordjson.json.ChannelData
-import discord4j.discordjson.json.ImmutableChannelData
 import no.sd.sdbot.SdBotApplication.SdBotApplicationLogger.logger
 import no.sd.sdbot.discord.command.CommandManager
 import no.sd.sdbot.discord.command.CommandMessage
@@ -21,7 +17,7 @@ class Bot (
 ) {
     init {
 
-        gateway
+        this.gateway
             .on(MessageCreateEvent::class.java)
             .map(MessageCreateEvent::getMessage)
             .filter { !it.author.get().isBot }
@@ -33,15 +29,10 @@ class Bot (
     }
 
     fun handleMessage(message: Message) {
-
-        if (message.content == "!join") {
-            message.authorAsMember.block()!!.voiceState.block()!!.channel.block()!!.join().block()
-        } else {
         val commandMessage = commandManager.handleCommand(CommandMessage(message))
         logger.info("Command from discord: ${message.content}")
 
         respondToCommand(commandMessage)
-        }
     }
 
     fun sendMessage(msg: String, channelId: ChannelId, deleteLastMsgInChannel: Boolean) {
@@ -63,16 +54,19 @@ class Bot (
         throw RuntimeException("Subscribe feilet. ", throwable)
     }
 
-    private fun respondToCommand(cmdMsg: CommandMessage) {
-        with(cmdMsg) {
-            if(deleteCommandMsg) this.message.delete().subscribe()
+    private fun respondToCommand(cmdMsg: CommandMessage?) {
+        if (cmdMsg != null) {
+            with(cmdMsg) {
+                if (deleteCommandMsg) this.message.delete().subscribe()
 
-            if (returnMsgChannelId == null) { message.channel.subscribe { handleResponse(it, this) }}
-            else {
-                gateway
-                    .getChannelById(Snowflake.of(returnMsgChannelId!!))
-                    .cast(MessageChannel::class.java)
-                    .subscribe { handleResponse(it, this) }
+                if (returnMsgChannelId == null) {
+                    message.channel.subscribe { handleResponse(it, this) }
+                } else {
+                    gateway
+                        .getChannelById(Snowflake.of(returnMsgChannelId!!))
+                        .cast(MessageChannel::class.java)
+                        .subscribe { handleResponse(it, this) }
+                }
             }
         }
     }

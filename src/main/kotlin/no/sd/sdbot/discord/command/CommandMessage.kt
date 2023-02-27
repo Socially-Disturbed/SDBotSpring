@@ -16,8 +16,8 @@ class CommandMessage(val message: Message) {
         else msg.substring(methodStartIndex)
     }
 
-    fun getArguments(): String? {
-        return if (!message.content.contains(" ")) null
-        else message.content.substring(message.content.indexOf(" ") + 1)
+    fun getArguments(): String {
+        if (!message.content.contains(" ")) throw IllegalArgumentException("Missing arguments: No player name(s)")
+        return message.content.substring(message.content.indexOf(" ") + 1)
     }
 }

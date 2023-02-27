@@ -45,4 +45,8 @@ data class ParticipantStatsResponse (
     val walkDistance: Double,
     val weaponsAcquired: Int,
     val winPlace: Int,
-)
+) {
+    override fun toString(): String {
+        return "ParticipantStatsResponse(DBNOs=$DBNOs, assists=$assists, damageDealt=$damageDealt, kills=$kills, name='$name', revives=$revives)"
+    }
+}

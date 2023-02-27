@@ -15,6 +15,7 @@ interface SDFunctions {
     fun getSDScoreBoard(cmdMsg: CommandMessage): CommandMessage
     fun help(cmdMsg: CommandMessage): CommandMessage
     fun steinSaksPapir(cmdMsg: CommandMessage): CommandMessage
+    fun joinChannel(cmdMsg: CommandMessage): CommandMessage?
     fun test(cmdMsg: CommandMessage): CommandMessage
 }
 

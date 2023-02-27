@@ -11,12 +11,11 @@ class MatchesApi (private val apiClient: PubgApiClient) {
         private const val matchesEndpoint = "/matches/"
     }
 
-    fun getMatch(matchId: String) : MatchResponseWrapper {
+    fun getMatch(matchId: String): MatchResponseWrapper? {
         val responseSpec = apiClient.doApiRequest(matchesEndpoint + matchId)
-        val matchResponseWrapper = responseSpec
+
+        return responseSpec
             .bodyToMono(MatchResponseWrapper::class.java)
             .block()
-
-        return matchResponseWrapper!!
     }
 }

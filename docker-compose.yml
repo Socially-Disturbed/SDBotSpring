@@ -1,0 +1,28 @@
+version: "1.0"
+services:
+  database:
+    container_name: sdbot-db
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=sdbot
+      - POSTGRES_PASSWORD=sdbot
+      - POSTGRES_DB=sdbot-db
+      - TZ=Europe/Oslo
+      - PGTZ=Europe/Oslo
+#    links:
+#      - "database:localhost"
+  application:
+    container_name: sdbot-application
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_URL=jdbc:postgresql://database:5432/sdbot-db
+      - discordToken=<discordToken>
+      - pubg.apiKey=<apiKey>
+    depends_on:
+      - database
+    build: .
+volumes:
+  db_volume: { }

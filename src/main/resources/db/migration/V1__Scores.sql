@@ -1,19 +1,29 @@
-create table sd_guest_score
+create table warrior
 (
-    id serial not null primary key ,
+    id serial not null primary key,
     player_name text not null unique,
-    score numeric,
-    wins integer,
     adr integer,
     rank text
 );
 
-create table sd_score
+create table guest_score
 (
-    id serial not null primary key ,
-    player_name text not null unique,
+    id serial primary key,
     score numeric,
     wins integer,
-    adr integer,
-    rank text
+    warriorid integer not null unique,
+    constraint warrior_fk
+        foreign key (warriorid)
+        references warrior (id)
+);
+
+create table sd_score
+(
+    id serial primary key,
+    score numeric,
+    wins integer,
+    warriorid integer not null unique ,
+    constraint warrior_fk
+        foreign key (warriorid)
+        references warrior (id)
 );

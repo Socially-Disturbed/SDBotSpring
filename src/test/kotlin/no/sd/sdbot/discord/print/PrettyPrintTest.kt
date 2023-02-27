@@ -9,10 +9,6 @@ import java.time.LocalTime
 
 class PrettyPrintTest {
 
-
-
-
-
     @Test
     fun testPrettyPrint() {
 

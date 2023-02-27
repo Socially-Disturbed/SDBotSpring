@@ -2,6 +2,10 @@ package no.sd.sdbot.discord.command
 
 import no.sd.sdbot.discord.function.SDFunctions
 
+interface FunctionMapper {
+    fun getFunction(sdFunctions: SDFunctions): ((CommandMessage) -> CommandMessage?)
+}
+
 enum class Command: FunctionMapper {
     GetPlayersByNames {
         override fun getFunction(sdFunctions: SDFunctions): (CommandMessage) -> CommandMessage {
@@ -63,6 +67,11 @@ enum class Command: FunctionMapper {
             return sdFunctions::steinSaksPapir
         }
     },
+    JoinChannel {
+        override fun getFunction(sdFunctions: SDFunctions): (CommandMessage) -> CommandMessage? {
+            return sdFunctions::joinChannel
+        }
+    },
     Test {
         override fun getFunction(sdFunctions: SDFunctions): (CommandMessage) -> CommandMessage {
             return sdFunctions::test
@@ -76,8 +85,4 @@ enum class Command: FunctionMapper {
             else null
         }
     }
-}
-
-interface FunctionMapper {
-    fun getFunction(sdFunctions: SDFunctions): ((CommandMessage) -> CommandMessage)
 }
