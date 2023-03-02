@@ -21,7 +21,7 @@ class UpdatePUBGStats(
         val bot: Bot
 ) {
 
-    @Scheduled(fixedRate = 1800000)
+    @Scheduled(fixedRate = 36000000)
     fun getPUBGStats() {
         val currentSeason: Season = seasonService.getCurrentSeason()
 

@@ -62,6 +62,11 @@ enum class Command: FunctionMapper {
         override fun getFunction(sdFunctions: SDFunctions): (CommandMessage) -> CommandMessage {
             return sdFunctions::steinSaksPapir
         }
+    },
+    Test {
+        override fun getFunction(sdFunctions: SDFunctions): (CommandMessage) -> CommandMessage {
+            return sdFunctions::test
+        }
     };
 
     companion object {

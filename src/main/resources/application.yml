@@ -1,9 +1,15 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/sdbot-db
+    url: jdbc:postgresql://127.0.0.1:8080/postgres?currentSchema="sdbot"
     username: postgres
-    password: sdbot
+    password: admin
     hikari:
       schema: sdbot
+    jpa:
+      hibernate:
+        ddl-auto:validate
   flyway:
     schemas: sdbot
+    baselineOnMigrate: true
+server:
+  port: 8090

@@ -9,6 +9,7 @@ import no.sd.sdbot.discord.ChannelId
 import no.sd.sdbot.discord.command.CommandMessage
 import no.sd.sdbot.discord.utility.print.userListToPrint
 import no.sd.sdbot.discord.steinsakspapir.SSPHandler
+import no.sd.sdbot.discord.utility.print.userListToPrettyNewPrint
 import org.springframework.stereotype.Component
 
 @Component
@@ -98,7 +99,7 @@ class DefaultSDFunctions(
         val player = arrOfMsg[0]
         val score = arrOfMsg[1].toFloat()
         dbService.updateSDScore(player, score)
-        cmdMsg.returningMsg = userListToPrint(dbService.getAllGuestUsers())
+        cmdMsg.returningMsg = userListToPrint(dbService.getAllSDUsers())
         cmdMsg.deleteLastChannelMsg = true
         cmdMsg.deleteCommandMsg = true
         cmdMsg.returnMsgChannelId = ChannelId.GUEST_HIGHSCORE_CHANNEL.id
@@ -139,5 +140,10 @@ class DefaultSDFunctions(
 
     override fun steinSaksPapir(cmdMsg: CommandMessage): CommandMessage {
         return sspHandler.startOrAddSSPRundeEntry(cmdMsg)
+    }
+
+    override fun test(cmdMsg: CommandMessage): CommandMessage {
+        cmdMsg.returningMsg = userListToPrettyNewPrint(dbService.getAllSDUsers())
+        return cmdMsg
     }
 }

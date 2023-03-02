@@ -23,18 +23,35 @@ fun SSPResult.prettyPrint(): String {
 }
 
 fun User.prettyPrint(): String {
-    return "\n-------------------------\n" +
-           "$name - ${rank}\n" +
-           "Score: $score\n" +
-           "Wins: ${wins}\n" +
-           "ADR: ${adr}\n" +
-           "-------------------------"
+    return "\n```" +
+            "$name - ${rank}\n" +
+            "Score: $score\n" +
+            "Wins: ${wins}\n" +
+            "ADR: ${adr}\n" +
+            "```"
+}
+
+fun User.prettyNewPrint(): String {
+    return "\n```" +
+            "$name - ${rank}\n" +
+            "Score: $score\n" +
+            "Wins: ${wins}\n" +
+            "ADR: ${adr}\n" +
+            "```"
 }
 
 fun userListToPrint(users: List<User>): String {
     var print = ""
     for (user in users)
         print += user.prettyPrint()
+
+    return print
+}
+
+fun userListToPrettyNewPrint(users: List<User>): String {
+    var print = ""
+    for (user in users)
+        print += user.prettyNewPrint()
 
     return print
 }
