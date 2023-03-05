@@ -1,4 +1,4 @@
-name: Java CI with Maven
+name: SD-bot (Master) Build, tag, create image and push image
 
 on:
   push:

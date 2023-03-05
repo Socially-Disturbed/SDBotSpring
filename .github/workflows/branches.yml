@@ -1,4 +1,4 @@
-name: Java CI with Maven
+name: SD-bot (Other Branches) Build with Maven
 
 on:
   push:
