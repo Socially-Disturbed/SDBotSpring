@@ -4,10 +4,10 @@ on:
   push:
     branches: [ master ]
 
-  env:
-    image_name: sdbot
-    registry: ghcr.io
-    registry_path: Socially-Disturbed
+env:
+  image_name: sdbot
+  registry: ghcr.io
+  registry_path: Socially-Disturbed
 
 jobs:
   build:
