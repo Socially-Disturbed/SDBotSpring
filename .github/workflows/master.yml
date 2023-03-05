@@ -7,7 +7,7 @@ on:
 env:
   image_name: sdbot
   registry: ghcr.io
-  registry_path: Socially-Disturbed
+  registry_path: socially-disturbed
 
 jobs:
   build:
