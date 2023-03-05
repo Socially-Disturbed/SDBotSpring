@@ -9,7 +9,9 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
-      contents: read
+      contents: write
+      packages: write
+      actions: read
 
     outputs:
       new_tag: ${{ steps.tag_version.outputs.new_tag }}
