@@ -8,10 +8,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      permissions:
-        permissions:
-          id-token: write
-          contents: 'read'
+      id-token: write
+      contents: read
 
     outputs:
       new_tag: ${{ steps.tag_version.outputs.new_tag }}
