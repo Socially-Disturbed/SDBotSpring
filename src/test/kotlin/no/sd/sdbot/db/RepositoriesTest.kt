@@ -2,16 +2,15 @@ package no.sd.sdbot.db
 
 import no.sd.sdbot.config.DiscordClientConfig
 import no.sd.sdbot.discord.Bot
+import no.sd.sdbot.testcontainer.TestWithDbContainer
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.transaction.annotation.Transactional
 
 @Transactional
-@SpringBootTest
-class RepositoriesTest {
+class RepositoriesTest: TestWithDbContainer() {
 
     @Autowired
     lateinit var guestScoreRepository: GuestScoreRepository
