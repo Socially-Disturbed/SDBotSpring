@@ -31,12 +31,6 @@ data class RankedPlayerStatsResponse (
     val relationships: SeasonRelationshipsResponse,
 )
 
-data class BatchRankedPlayerStatsResponse (
-    val type: String,
-    val attributes: BatchRankedPlayerStatsAttributes,
-    val relationships: SeasonRelationshipsResponse,
-)
-
 data class SeasonDataResponse (
     val data: SeasonIdResponse
 )
@@ -50,17 +44,8 @@ data class RankedPlayerStatsAttributes(
     val rankedGameModeStats: RankedGameModeStatsResponse,
 )
 
-data class BatchRankedPlayerStatsAttributes(
-    val gameModeStats: GameModeStatsResponse,
-)
-
 data class RankedGameModeStatsResponse (
     val squad: RankedGameModeStatsObjectResponse?,
-    @JsonProperty("squad-fpp")
-    val squadFpp: RankedGameModeStatsObjectResponse?
-)
-
-data class GameModeStatsResponse (
     @JsonProperty("squad-fpp")
     val squadFpp: RankedGameModeStatsObjectResponse?
 )
