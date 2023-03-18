@@ -1,13 +1,18 @@
 package no.sd.sdbot.discord.command
 
 import discord4j.core.`object`.entity.Message
+import discord4j.core.`object`.entity.User
+import discord4j.core.spec.EmbedCreateSpec
 
 class CommandMessage(val message: Message) {
 
     var deleteCommandMsg: Boolean = false
     var deleteLastChannelMsg: Boolean = false
     var returningMsg: String? = null
-    var returnMsgChannelId: String? = null
+    var returnMsgChannelIds: ArrayList<String> = ArrayList()
+    var sendEmbedMsg: Boolean = false
+    var embedMsg: EmbedCreateSpec? = null
+    var user: User? = null
 
     fun getMethodName(): String {
         val msg = message.content
