@@ -10,7 +10,7 @@ import java.sql.ResultSet
 class DbService(@Autowired val jdbcTemplate: JdbcTemplate) {
     var userRowMapper: RowMapper<User> = RowMapper<User> { resultSet: ResultSet, rowIndex: Int ->
         User(resultSet.getString("NAME"), resultSet.getFloat("SCORE"),
-                resultSet.getInt("WINS"), resultSet.getFloat("ADR"), resultSet.getString("RANK"))
+                resultSet.getInt("WINS"), resultSet.getInt("ADR"), resultSet.getString("RANK"))
     }
 
     fun updateSDWin(user: String?) {
@@ -68,10 +68,10 @@ class DbService(@Autowired val jdbcTemplate: JdbcTemplate) {
     }
 
     fun getAllSDUsers(): List<User> {
-        return jdbcTemplate.query("SELECT * FROM \"SD_SCORE\"", userRowMapper)
+        return jdbcTemplate.query("SELECT * FROM \"SD_SCORE\" ORDER BY \"WINS\" DESC, \"SCORE\" DESC, \"ADR\" DESC", userRowMapper)
     }
 
     fun getAllGuestUsers(): List<User> {
-        return jdbcTemplate.query("SELECT * FROM \"SD_GUEST_SCORE\"", userRowMapper)
+        return jdbcTemplate.query("SELECT * FROM \"SD_GUEST_SCORE\" ORDER BY \"WINS\" DESC, \"SCORE\" DESC, \"ADR\" DESC", userRowMapper)
     }
 }

@@ -1,5 +1,6 @@
 package no.sd.sdbot.discord.steinsakspapir
 
+import discord4j.core.`object`.entity.channel.MessageChannel
 import no.sd.sdbot.discord.command.CommandMessage
 import no.sd.sdbot.discord.utility.print.prettyPrint
 import no.sd.sdbot.discord.steinsakspapir.SSPType.*
@@ -18,14 +19,27 @@ class SSPHandler {
 
         sspResult?.let {
             cmdMsg.returningMsg = it.prettyPrint()
-            cmdMsg.returnMsgChannelId= "1076223424801816658"
+            cmdMsg.returnMsgChannelIds.add("1076223424801816658")
+            println("contestant size " + sspResult.contestants.size)
+            for (contestant in sspResult.contestants) {
+                if (contestant == null) continue
+                println(contestant)
+                println(contestant!!.dmChannel)
+                println(contestant.dmChannel!!.id.asString())
+                cmdMsg.returnMsgChannelIds.add(contestant.dmChannel.id.asString())
+            }
+        } ?: run {
+//            cmdMsg.returnMsgChannelIds.add("1076223424801816658")
+//            cmdMsg.returningMsg = "STEIN - SAKS - PAPIR \n "
         }
+        println("channels size " + cmdMsg.returnMsgChannelIds.size)
         return cmdMsg
     }
 
     fun createSSPEntry(cmdMsg: CommandMessage): SSPEntry {
         return SSPEntry(
             cmdMsg.message.author.get().username,
+            cmdMsg.message.channel.block(),
             SSPType.getSSPType(cmdMsg.getMethodName())!!,
             LocalTime.now()
         )
@@ -52,6 +66,7 @@ class SSPHandler {
 
 class SPPRunde {
     private val entries: MutableList<SSPEntry> = ArrayList()
+    private val dmIds: MutableList<SSPEntry> = ArrayList()
 
     fun newRundeEntry(entry: SSPEntry) {
         when {
@@ -90,6 +105,7 @@ data class SSPResult (
 
 data class SSPEntry (
     val author: String,
+    val dmChannel: MessageChannel?,
     val type: SSPType,
     val time: LocalTime
 )

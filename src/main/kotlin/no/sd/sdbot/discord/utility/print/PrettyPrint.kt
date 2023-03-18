@@ -40,6 +40,15 @@ fun User.prettyNewPrint(): String {
             "```"
 }
 
+fun User.prettyNewPrintWithoutName(): String {
+    return "\n```" +
+            "${rank}\n" +
+            "Score: $score\n" +
+            "Wins: ${wins}\n" +
+            "ADR: ${adr}\n" +
+            "```"
+}
+
 fun userListToPrint(users: List<User>): String {
     var print = ""
     for (user in users)
@@ -49,6 +58,14 @@ fun userListToPrint(users: List<User>): String {
 }
 
 fun userListToPrettyNewPrint(users: List<User>): String {
+    var print = ""
+    for (user in users)
+        print += user.prettyNewPrint()
+
+    return print
+}
+
+fun userListToPrettyNewPrintWithoutName(users: List<User>): String {
     var print = ""
     for (user in users)
         print += user.prettyNewPrint()
